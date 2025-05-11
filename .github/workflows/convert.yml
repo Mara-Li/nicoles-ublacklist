@@ -1,0 +1,35 @@
+name: Convert uBlacklist to Adblock Plus
+
+on:
+  push:
+    paths:
+      - nicoles_ubl.txt
+      - .github/workflows/convert.yml
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies (none here)
+        run: echo "No deps required"
+
+      - name: Run conversion script
+        run: python convert_to_ADP.py
+
+      - name: Commit converted list
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -am "chore: auto-convert blacklist to adblock syntax" || echo "No changes to commit"
+          git push
